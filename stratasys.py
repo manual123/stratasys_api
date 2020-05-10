@@ -14,7 +14,7 @@ def make_request(sock, req):
 def recv_data(sock,size):
     """ Receives `size` bytes from the printer and returns
     the first null-terminated/C-style string in the returned payload.
-    """ 
+    """
     data = b''
     needed=size
     while(needed>0):
@@ -25,12 +25,12 @@ def recv_data(sock,size):
 def printer_get_data(h,p=53742):
     """ Makes a rquest for the `status.sts` file over the
     Stratasys line protocol and returns the contents as a byte string.
-    
+
     Returns None if the printer cannot be contacted."""
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.settimeout(4.0)
     try:
-        s.connect((h, p))  
+        s.connect((h, p))
         make_request(s,b'GetFile')
         make_request(s,b'status.sts')
         make_request(s,b'NA')
@@ -85,7 +85,7 @@ def stratasys_out_proc(status_sts):
         return None
     # Split semicolon delimited stanzas
     stanzas = status_sts.replace(b'\n',b'').replace(b'\r',b'').split(b';')
-    
+
     # Process each indented stanza
     for stanza in stanzas:
         machinestatus = bracesplit.search(stanza.decode("utf-8"))
@@ -137,5 +137,5 @@ if( __name__ == "__main__"):
     else:
         print("Reading printer data via network from {}".format(cf.printer_ip))
         printer_data = printer_get_data(cf.printer_ip)
-    
+
     print(output_postproc(stratasys_out_proc(printer_data)))
